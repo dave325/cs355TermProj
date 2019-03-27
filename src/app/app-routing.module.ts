@@ -11,7 +11,7 @@ import { ZybooksComponent } from './zybooks/zybooks.component';
 
 const routes: Routes = [
   {
-    path:"/",
+    path:"",
     component:HomeComponent
   },
   {

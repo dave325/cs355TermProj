@@ -1,3 +1,11 @@
-<p>
-  phase3 works!
-</p>
+<div class="File">
+  <h2>Search Results</h2>
+  <form id="form">
+      <label>Add files here:
+          <input type="file" name="test" id="test" (change)="displayResults($event.target.files)"/>
+      </label>
+  </form>
+  <pre id="result">
+    {{this.fileContents}}
+  </pre>
+</div>
