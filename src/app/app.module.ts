@@ -14,6 +14,7 @@ import { Phase5Component } from './phase5/phase5.component';
 import { BrowserComponent } from './browser/browser.component';
 import { ZybooksComponent } from './zybooks/zybooks.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ContactUsComponent } from './contact-us/contact-us.component';
   imports: [
     BrowserModule, 
     BrowserAnimationsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

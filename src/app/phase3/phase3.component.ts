@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-phase3',
@@ -8,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class Phase3Component implements OnInit {
 
   private fileContents;
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
   }
@@ -19,10 +20,12 @@ export class Phase3Component implements OnInit {
       let file = files.item(0);
       if (file.type === "text/csv" || file.type === "text/xml" || file.type === "application/json") {
         let fileReader = new FileReader();
-        fileReader.readAsText(file);
+
         fileReader.onload = (e) => {
-          this.fileContents = fileReader.result;
+          this.fileContents = JSON.parse(e.target.result);
         }
+        this.fileContents = JSON.stringify(this.fileContents);
+        fileReader.readAsText(file);
       } else {
         document.getElementById("result").innerHTML = "File type not supported!"
       }

@@ -11,7 +11,6 @@ export class BrowserComponent implements OnInit {
 
   ngOnInit() {
 
-    window.onload = function () {
       let screen = document.getElementById('screen-info');
       let location = document.getElementById('location-info');
       let navigator = document.getElementById('navigator-info');
@@ -47,6 +46,6 @@ export class BrowserComponent implements OnInit {
       geolocation.appendChild(el);
 
     }
-  }
+  
 
 }
