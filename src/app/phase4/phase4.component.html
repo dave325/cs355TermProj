@@ -1,3 +1,16 @@
-<p>
-  phase4 works!
-</p>
+<div id="content">
+  <p>Search <input id="searchInput" type="text" [(ngModel)]="query"></p>
+  <button class="btn btn-primary" (click)="getSearchResults()"> Search </button>
+  <div id="result" *ngFor="let content of fileContents; index as i">
+    <input type="checkbox" (click)="updateInfo(i)">
+    <h2>{{content.title}}</h2>
+    <a href="{{content.url}}">{{content.url}}</a>
+    <p>{{content.description}}</p>
+  </div>
+  <br />
+  <div *ngIf="fileContents.length > 0">
+    <button class="btn btn-primary" (click)="submit()">Download as JSON</button>
+    <button class="btn btn-primary" (click)="submitCSV()">Download as CSV</button>
+    <button class="btn btn-primary" (click)="submitXML()">Download as XML</button>
+  </div>
+</div>

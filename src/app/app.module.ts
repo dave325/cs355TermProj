@@ -15,6 +15,7 @@ import { BrowserComponent } from './browser/browser.component';
 import { ZybooksComponent } from './zybooks/zybooks.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     BrowserModule, 
     BrowserAnimationsModule,
+    FormsModule,
     AppRoutingModule,
     HttpClientModule
   ],

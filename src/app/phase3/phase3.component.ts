@@ -13,6 +13,7 @@ export class Phase3Component implements OnInit {
   private fileContents;
   private selectedExportsIndex;
   private selectedExports;
+  private info;
   constructor(private http: HttpClient) {
     this.selectedExports = [];
     this.selectedExportsIndex = [];
@@ -30,7 +31,8 @@ export class Phase3Component implements OnInit {
           let fileReader = new FileReader();
 
           fileReader.onload = (e: any) => {
-            this.fileContents = JSON.parse(e.target.result);
+            this.fileContents = JSON.parse(e.target.result).Result;
+            console.log(JSON.parse(e.target.result).Result)
           }
           this.fileContents = JSON.stringify(this.fileContents);
           fileReader.readAsText(file);
@@ -40,17 +42,19 @@ export class Phase3Component implements OnInit {
           let newFile = new Promise((resolve, reject) => {
 
             fileReader.onload = (e: any) => {
+              console.log(e.target.result)
               let temp = new DOMParser().parseFromString(e.target.result, "text/xml");
-              resolve(JSON.parse(this.xml2json(temp, "")).root);
+              resolve(JSON.parse(this.xml2json(temp, "")).results.result);
             }
 
           });
           newFile.then((res) => {
             this.fileContents = res;
-            console.log(res)
+          }, (err) => {
+            console.log(err)
           })
           fileReader.readAsText(file);
-        }else{
+        } else {
           let fileReader = new FileReader();
 
           let newFile = new Promise((resolve, reject) => {
@@ -85,36 +89,115 @@ export class Phase3Component implements OnInit {
     this.selectedExports.push(this.fileContents[i]);
   }
   submit(): void {
-    console.log(this.selectedExportsIndex);
-    console.log(this.selectedExports)
-  }
-  csvJSON(csv){
-
-    var lines=csv.split("\n");
-  
-    var result = [];
-  
-    var headers=lines[0].split(",");
-  
-    for(var i=1;i<lines.length;i++){
-  
-        var obj = {};
-        var currentline=lines[i].split(",");
-  
-        for(var j=0;j<headers.length;j++){
-            obj[headers[j]] = currentline[j];
-        }
-  
-        result.push(obj);
-  
+    if (this.fileContents.length > 0) {
+      this.info = "No file selected";
+      return;
     }
-  
+    if (this.selectedExports.length > 0) {
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.selectedExports));
+      var downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "info" + ".json");
+      document.body.appendChild(downloadAnchorNode); // required for firefox
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    } else {
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.fileContents));
+      var downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "info" + ".json");
+      document.body.appendChild(downloadAnchorNode); // required for firefox
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    }
+  }
+
+  submitCSV(): void {
+    if (this.fileContents.length > 0) {
+      this.info = "No file selected";
+      return;
+    }
+    let csv;
+    if (this.selectedExports.length > 0) {
+      const items = this.selectedExports;
+      csv = "data:text/csv;charset=utf-8,";
+      csv = csv + this.ConvertToCSV(this.selectedExports);
+    } else {
+      const items = this.fileContents;
+      csv = "data:text/csv;charset=utf-8," + this.ConvertToCSV(this.fileContents);
+    }
+    var link = document.createElement("a");
+    link.setAttribute("href", csv);
+    link.setAttribute("download", "my_data.csv");
+    document.body.appendChild(link); // Required for FF
+
+    link.click(); // This will download the data file named "my_data.csv".
+    link.remove();
+  }
+
+  submitXML(): void {
+    if (this.fileContents.length > 0) {
+      this.info = "No file selected";
+      return;
+    }
+    let a = document.createElement('a');
+    if (this.selectedExports.length > 0) {
+      let fileName = 'info.xml';
+      let xmlStr = '<?xml version="1.0" encoding="UTF-8"?> <results><result>' +
+        this.json2xml(this.selectedExports, '') +
+        '</result></results>';
+      a.download = fileName;
+      a.href = URL.createObjectURL(new File([xmlStr], fileName, { type: 'text/xml' }));
+    } else {
+      let fileName = 'info.xml';
+      let xmlStr = '<?xml version="1.0" encoding="UTF-8"?> <results>' +
+        this.json2xml(this.fileContents, '') +
+        '</results>';
+
+      a.download = fileName;
+      a.href = URL.createObjectURL(new File([xmlStr], fileName, { type: 'text/xml' }));
+    }
+    a.click();
+    a.remove();
+  }
+
+  csvJSON(csv) {
+
+    var lines = csv.split("\n");
+
+    var result = [];
+
+    var headers = lines[0].split(",");
+
+    for (var i = 1; i < lines.length; i++) {
+
+      var obj = {};
+      var currentline = lines[i].split(",");
+
+      for (var j = 0; j < headers.length; j++) {
+        obj[headers[j]] = currentline[j];
+      }
+
+      result.push(obj);
+
+    }
+
     //return result; //JavaScript object
     return JSON.stringify(result); //JSON
   }
-
+  // JSON to CSV Converter
+  ConvertToCSV(objArray) {
+    const items = objArray;
+    const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
+    const header = Object.keys(items[0])
+    let csv = items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+    csv.unshift(header.join(','))
+    csv = csv.join('\r\n');
+    csv.replace(/['"]+/g, '');
+    return csv;
+  }
   /*	This work is licensed under Creative Commons GNU LGPL License.
-  
+   
     License: http://creativecommons.org/licenses/LGPL/2.1/
      Version: 0.9
     Author:  Stefan Goessner/2006
