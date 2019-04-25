@@ -7,8 +7,7 @@
     </label>
   </form>
   <div id="result" *ngFor="let content of fileContents; index as i">
-      <input type="checkbox" (click)="updateInfo(i)">
-      <h2>{{content.title}}</h2>
+      <h2> <input type="checkbox" (click)="updateInfo(i)">  {{content.title}}</h2>
       <a href="{{content.url}}">{{content.url}}</a>
       <p>{{content.description}}</p>
   </div>

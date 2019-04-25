@@ -113,10 +113,7 @@ export class Phase3Component implements OnInit {
   }
 
   submitCSV(): void {
-    if (this.fileContents.length > 0) {
-      this.info = "No file selected";
-      return;
-    }
+
     let csv;
     if (this.selectedExports.length > 0) {
       const items = this.selectedExports;
@@ -136,10 +133,7 @@ export class Phase3Component implements OnInit {
   }
 
   submitXML(): void {
-    if (this.fileContents.length > 0) {
-      this.info = "No file selected";
-      return;
-    }
+
     let a = document.createElement('a');
     if (this.selectedExports.length > 0) {
       let fileName = 'info.xml';

@@ -12,31 +12,38 @@ import { ZybooksComponent } from './zybooks/zybooks.component';
 const routes: Routes = [
   {
     path:"",
-    component:HomeComponent
+    component:HomeComponent,
+    data:{state: ""}
   },
   {
     path:"phase2",
-    component:Phase2Component
+    component:Phase2Component,
+    data:{state: "phase2"}
   },
   {
     path:"phase3",
-    component:Phase3Component
+    component:Phase3Component,
+    data:{state: "phase3"}
   },
   {
     path:"phase4",
-    component:Phase4Component
+    component:Phase4Component,
+    data:{state: "phase4"}
   },
   {
     path:"phase5",
-    component:Phase5Component
+    component:Phase5Component,
+    data:{state: "phase5"}
   },
   {
     path:"browser",
-    component:BrowserComponent
+    component:BrowserComponent,
+    data:{state: "browser"}
   },
   {
     path:"contatUs",
-    component:ContactUsComponent
+    component:ContactUsComponent,
+    data:{state: "contactUs"}
   },
   {
     path:"zybooks",
