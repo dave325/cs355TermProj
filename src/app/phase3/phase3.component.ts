@@ -121,13 +121,17 @@ export class Phase3Component implements OnInit {
       csv = csv + this.ConvertToCSV(this.selectedExports);
     } else {
       const items = this.fileContents;
-      csv = "data:text/csv;charset=utf-8," + this.ConvertToCSV(this.fileContents);
+      csv = "data:text/csv;charset=utf-8,\n";
+      for(let i = 0; i < this.fileContents.length; i++){
+        csv += this.fileContents[i].title + ",";
+        csv += this.fileContents[i].url + ",";
+        csv +=  this.fileContents[i].description + "\n";
+      }
     }
     var link = document.createElement("a");
     link.setAttribute("href", csv);
     link.setAttribute("download", "my_data.csv");
     document.body.appendChild(link); // Required for FF
-
     link.click(); // This will download the data file named "my_data.csv".
     link.remove();
   }
@@ -144,10 +148,15 @@ export class Phase3Component implements OnInit {
       a.href = URL.createObjectURL(new File([xmlStr], fileName, { type: 'text/xml' }));
     } else {
       let fileName = 'info.xml';
-      let xmlStr = '<?xml version="1.0" encoding="UTF-8"?> <results>' +
-        this.json2xml(this.fileContents, '') +
-        '</results>';
-
+      let xmlStr = '<?xml version="1.0" encoding="UTF-8"?> <results>';
+      for(let i = 0; i < this.fileContents.length; i++){
+        xmlStr = "<result>";
+        xmlStr += "<title>" + this.fileContents[i].title + "</title>";
+        xmlStr += "<url>" + this.fileContents[i].url + "</url>";
+        xmlStr += "<description>" + this.fileContents[i].description + "</description>";
+        xmlStr = "</result>";
+      }
+      xmlStr += '</results>';
       a.download = fileName;
       a.href = URL.createObjectURL(new File([xmlStr], fileName, { type: 'text/xml' }));
     }
@@ -206,14 +215,13 @@ export class Phase3Component implements OnInit {
       }
       else if (typeof (v) == "object") {
         var hasChild = false;
-        xml += ind + "<" + name;
+
         for (var m in v) {
           if (m.charAt(0) == "@")
             xml += " " + m.substr(1) + "=\"" + v[m].toString() + "\"";
           else
             hasChild = true;
         }
-        xml += hasChild ? ">" : "/>";
         if (hasChild) {
           for (var m in v) {
             if (m == "#text")
@@ -224,10 +232,12 @@ export class Phase3Component implements OnInit {
               xml += toXml(v[m], m, ind + "\t");
           }
           xml += (xml.charAt(xml.length - 1) == "\n" ? ind : "") + "</" + name + ">";
+          console.log(name);
         }
       }
       else {
         xml += ind + "<" + name + ">" + v.toString() + "</" + name + ">";
+        console.log(name);
       }
       return xml;
     }, xml = "";
