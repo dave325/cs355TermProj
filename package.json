@@ -16,6 +16,9 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-devkit/build-angular": "^0.13.8",
+    "@angular/cli": "^7.3.6",
+    "@angular/compiler-cli": "^7.2.11",
     "@angular/animations": "~7.2.11",
     "@angular/common": "~7.2.11",
     "@angular/compiler": "^7.2.11",
@@ -41,7 +44,9 @@
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",
     "underscore": "^1.9.1",
-    "zone.js": "^0.8.29"
+    "zone.js": "^0.8.29",
+    "tslint": "~5.14.0",
+    "typescript": "3.1.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.13.8",
