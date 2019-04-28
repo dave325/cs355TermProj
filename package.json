@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "node ./bin/www",
+    "start": "ng build && node ./bin/www",
     "build": "ng build",
     "test": "ng test",
     "build:watch": "ng build --watch",
@@ -30,6 +30,7 @@
     "core-js": "^3.0.0",
     "csvtojson": "^2.0.8",
     "dotenv": "^7.0.0",
+    "express": "^4.16.4",
     "jsonwebtoken": "^8.3.0",
     "jwt-decode": "^2.2.0",
     "mongoose": "^5.5.4",
