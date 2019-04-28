@@ -16,8 +16,9 @@ const fs = require('fs');
   app.use(express.static(path.join(__dirname, 'tmp')));
   app.use(express.static(path.join(__dirname, 'dist')));
   //apply routes
-  app.use('/', frontend);
   app.use("/api", routes);
+  app.use('/', frontend);
+
 
 
 module.exports = app;
