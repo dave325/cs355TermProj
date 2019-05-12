@@ -44,6 +44,7 @@ export class Phase3Component implements OnInit {
             fileReader.onload = (e: any) => {
               console.log(e.target.result)
               let temp = new DOMParser().parseFromString(e.target.result, "text/xml");
+              console.log(JSON.parse(this.xml2json(temp, "")).results.result);
               resolve(JSON.parse(this.xml2json(temp, "")).results.result);
             }
 
@@ -117,18 +118,24 @@ export class Phase3Component implements OnInit {
     let csv;
     if (this.selectedExports.length > 0) {
       const items = this.selectedExports;
-      csv = "data:text/csv;charset=utf-8,";
-      csv = csv + this.ConvertToCSV(this.selectedExports);
+      //csv = "data:text/csv;charset=utf-8,";
+      csv = "title, url, desription\r\n";
+      for (let i = 0; i < this.selectedExports.length; i++) {
+        csv += this.selectedExports[i].title + ",";
+        csv += this.selectedExports[i].url + ",";
+        csv += this.selectedExports[i].description + "\r\n";
+      }
     } else {
       const items = this.fileContents;
-      csv = "data:text/csv;charset=utf-8,\n";
-      for(let i = 0; i < this.fileContents.length; i++){
+      //csv = "data:text/csv;charset=utf-8,\r\n";
+      for (let i = 0; i < this.fileContents.length; i++) {
         csv += this.fileContents[i].title + ",";
         csv += this.fileContents[i].url + ",";
-        csv +=  this.fileContents[i].description + "\n";
+        csv += this.fileContents[i].description + "\r\n";
       }
     }
     var link = document.createElement("a");
+    csv = "data:text/csv;charset=utf-8;base64,"+ btoa(csv);
     link.setAttribute("href", csv);
     link.setAttribute("download", "my_data.csv");
     document.body.appendChild(link); // Required for FF
@@ -141,20 +148,26 @@ export class Phase3Component implements OnInit {
     let a = document.createElement('a');
     if (this.selectedExports.length > 0) {
       let fileName = 'info.xml';
-      let xmlStr = '<?xml version="1.0" encoding="UTF-8"?> <results><result>' +
-        this.json2xml(this.selectedExports, '') +
-        '</result></results>';
+      let xmlStr = '<?xml version="1.0"?>\n';
+      for (let i = 0; i < this.selectedExports.length; i++) {
+        xmlStr += "<result>\n";
+        xmlStr += "<title>" + this.selectedExports[i].title.replace(/&/g, "&amp;") + "</title>\n";
+        xmlStr += "<url>" + this.selectedExports[i].url.replace(/&/g, "&amp;") + "</url>\n";
+        xmlStr += "<description>" + this.selectedExports[i].description.replace(/&/g, "&amp;") + "</description>\n";
+        xmlStr += "</result>\n";
+      }
+      xmlStr += '</results>';
       a.download = fileName;
       a.href = URL.createObjectURL(new File([xmlStr], fileName, { type: 'text/xml' }));
     } else {
       let fileName = 'info.xml';
-      let xmlStr = '<?xml version="1.0" encoding="UTF-8"?> <results>';
-      for(let i = 0; i < this.fileContents.length; i++){
-        xmlStr = "<result>";
-        xmlStr += "<title>" + this.fileContents[i].title + "</title>";
-        xmlStr += "<url>" + this.fileContents[i].url + "</url>";
-        xmlStr += "<description>" + this.fileContents[i].description + "</description>";
-        xmlStr = "</result>";
+      let xmlStr = '<?xml version="1.0"?> <results>\n';
+      for (let i = 0; i < this.fileContents.length; i++) {
+        xmlStr += "<result>\n";
+        xmlStr += "<title>" + this.fileContents[i].title.replace(/&/g, "&amp;") + "</title>\n";
+        xmlStr += "<url>" + this.fileContents[i].url.replace(/&/g, "&amp;") + "</url>\n";
+        xmlStr += "<description>" + this.fileContents[i].description.replace(/&/g, "&amp;") + "</description>\n";
+        xmlStr += "</result>\n";
       }
       xmlStr += '</results>';
       a.download = fileName;

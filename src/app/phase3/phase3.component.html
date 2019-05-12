@@ -1,6 +1,6 @@
 <div class="File">
   <h2>Search Results</h2>
-  <h3>{{info}}</h3>
+  <h3 role="alert" class="alert alert-danger" *ngIf="info">{{info}}</h3>
   <form id="form">
     <label>Add files here:
       <input type="file" name="test" id="test" (change)="displayResults($event.target.files)" />
@@ -11,7 +11,9 @@
       <a href="{{content.url}}">{{content.url}}</a>
       <p>{{content.description}}</p>
   </div>
-  <button class="btn btn-primary" (click)="submit()">Download as JSON</button>
-  <button class="btn btn-primary" (click)="submitCSV()">Download as CSV</button>
-  <button class="btn btn-primary" (click)="submitXML()">Download as XML</button>
+  <div *ngIf="fileContents.length > 0">
+      <button class="btn btn-primary" (click)="submit()">Download as JSON</button>
+      <button class="btn btn-primary" (click)="submitCSV()">Download as CSV</button>
+      <button class="btn btn-primary" (click)="submitXML()">Download as XML</button>
+    </div>
 </div>
