@@ -3,14 +3,7 @@ const $ = require('cheerio');
 const puppeteer = require('puppeteer');
 let url = 'https://en.wikipedia.org/wiki/Car';
 url = "https://cnn.com"
-
-const mysql = require('mysql');
-const db = mysql.createConnection({
-    host: 'us-cdbr-iron-east-02.cleardb.net',
-    user: 'be546f8c4a4ea7',
-    password: '744c4f69',
-    database: 'heroku_376e5d0b653c734'
-});
+const db = require('../config/db');
 
 module.exports.test = (req, res) => {
     rp(url)
@@ -82,10 +75,9 @@ function newTest(url, startTime) {
                 info.map(function (el, idx) {
                     if (words.has(el) && el in freq) {
                         freq[el]++;
-                    } else if(words.has(el) && !(el in freq)){
-                        freq[el] = 1;
-                    }else{
+                    } else {
                         words.add(el);
+                        freq[el] = 1;
                     }
                 })
 
@@ -97,11 +89,11 @@ function newTest(url, startTime) {
             })
             //console.log(index)
             /* Begin transaction */
-            db.beginTransaction(function (err) {
+            return db.beginTransaction(function (err) {
                 if (err) { throw err; }
                 console.log(arr)
 
-                db.query(str, [arr], function (err, result) {
+                return db.query(str, [arr], function (err, result) {
                     if (err) {
                         db.rollback(function () {
                             throw err;
@@ -109,34 +101,42 @@ function newTest(url, startTime) {
                     }
                     let startId = result.insertId;
                     let numRows = result.affectedRows * 10;
-
-                    console.log(result)
                     let date = Date.now() - startTime;
-                    db.query(strPage, [url, title, description, Date.now(), Date.now(), date], function (err, result) {
+                    return db.query(strPage, [url, title, description, Date.now(), Date.now(), date], function (err, result) {
                         if (err) {
                             db.rollback(function () {
                                 throw err;
                             });
                         }
                         let pageid = result.insertId;
+                        let j = 0;
                         for (let i = startId; i < (startId + numRows); i += 10) {
-                            let temp = [pageid, i];
+                            let temp = [pageid, i, freq[index[j]]];
                             t.push(temp);
+                            j++;
                         }
-                        db.commit(function (err) {
+                        return db.query(pageWordSQL, [t], function (err, result) {
                             if (err) {
                                 db.rollback(function () {
                                     throw err;
                                 });
                             }
-                            console.log('Transaction Complete.');
-                            db.end();
+                            return db.commit(function (err) {
+                                if (err) {
+                                    db.rollback(function () {
+                                        throw err;
+                                    });
+                                }
+                                console.log('Transaction Complete.');
+                                db.end();
+                                return "submiited";
+                            });
                         });
                     });
                 });
             });
             /* End transaction */
-            console.log("Meta Data: " + $('meta[name="description"]', html).attr('content'))
+            //console.log("Meta Data: " + $('meta[name="description"]', html).attr('content'))
             /* $('meta[name="description"]', html).map(function () {
                 console.log($(this))
             }).next().text(); */
@@ -166,7 +166,6 @@ function newTest(url, startTime) {
                 i: info
             };
             */
-            return "ok";
         })
         .catch(function (err) {
             //handle error
@@ -206,4 +205,33 @@ module.exports.findInfo = (req, res) => {
             //handle error
             console.log(err)
         });
+}
+
+module.exports.query = (req, res) => {
+    let where;
+    if (req.body.isInsensitive && req.body.isPartialMatch) {
+        where = `UPPER(word.word) LIKE %UPPER('${req.body.term}')%`;
+    } else if (req.body.isPartialMatch) {
+        where = `word.word LIKE '%${req.body.term}%'`;
+    } else if (req.body.isInsensitive) {
+        where = `UPPER(word.word) = UPPER('${req.body.term}')`;
+    } else {
+        where = `word.word = "${req.body.term}"`;
+    }
+    console.log(where)
+    let sql = `SELECT * 
+               FROM page, word, page_word
+               WHERE page.pageId = page_word.pageId
+               AND word.wordId = page_word.wordId
+               AND ${where}
+               ORDER BY freq
+                `;
+    return db.query(sql, (err, result) => {
+        if(err){
+            console.log(err);
+            res.json(err).status(500);
+        }
+        res.json(result).status(200);
+
+    });
 }

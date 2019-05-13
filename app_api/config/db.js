@@ -1,16 +1,8 @@
-var mongoose = require('mongoose');
-const url = "mongodb://oweyaa:password1@ds129821.mlab.com:29821/oweyaa";
-mongoose.connect(url, {useNewUrlParser:true});
-// Get Mongoose to use the global promise library
-mongoose.Promise = global.Promise;
-// Close mongoose connection, passing through an anonymous function to run when closed
-var gracefulShutdown = function (msg, callback) {
-    mongoose.connection.close(function () {
-        console.log('Mongoose disconnected through ' + msg);
-        callback();
-    });
-};
-require('../models/candidateuser');
-require('../models/companyuser');
-require('../models/user.js');
-module.exports = mongoose.connection;
+const mysql = require('mysql');
+const db = mysql.createConnection({
+    host: 'us-cdbr-iron-east-02.cleardb.net',
+    user: 'be546f8c4a4ea7',
+    password: '744c4f69',
+    database: 'heroku_376e5d0b653c734'
+});
+module.exports = db;
