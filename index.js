@@ -34,10 +34,6 @@ process.on('exit', ()=> {
 //catches ctrl+c event
 process.on('SIGINT', ()=> {   db.end(); process.exit(); });
 
-// catches "kill pid" (for example: nodemon restart)
-process.on('SIGUSR1', ()=> {   db.end(); process.exit();});
-process.on('SIGUSR2', ()=> {   db.end(); process.exit();});
-
 //catches uncaught exceptions
 process.on('uncaughtException', ()=> {   db.end(); process.exit();});
 module.exports = app;

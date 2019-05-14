@@ -37,13 +37,13 @@ module.exports.puppetTest = (req, res) => {
             return browser.newPage();
         })
         .then((page) => {
-            return page.goto(url).then(function () {
+            return page.goto(req.body.url).then(function () {
                 return page.content();
             });
         })
         .then((html) => {
             return Promise.all(
-                newTest(url, startTime)
+                newTest(req.body.url, startTime)
             );
         })
         .then((presidents) => {

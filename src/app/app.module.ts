@@ -16,6 +16,7 @@ import { ZybooksComponent } from './zybooks/zybooks.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { FormsModule } from '@angular/forms';
     Phase5Component,
     BrowserComponent,
     ZybooksComponent,
-    ContactUsComponent
+    ContactUsComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule, 
