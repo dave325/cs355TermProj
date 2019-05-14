@@ -1,4 +1,6 @@
 <div id="content">
+    <h2>Search Results</h2>
+  <h2 role="alert" class="alert alert-danger" *ngIf="errorMsg">{{errorMsg}}</h2>
   <p>Search <input id="searchInput" type="text" [(ngModel)]="query"></p>
   <button class="btn btn-primary" (click)="getSearchResults()"> Search </button>
   <div id="result" *ngFor="let content of fileContents; index as i">
