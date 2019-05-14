@@ -31,10 +31,12 @@ export class AdminComponent implements OnInit {
     if (this.validURL(this.url)) {
       this.http.post('/api/puppet', { url: this.url }).toPromise().then(
         (res) => {
-          console.log(res)
+          console.log(res);
+          this.info = "Successfully Added";
         },
         (err) => {
           console.log(err);
+          this.info = "Invalid Url";
         }
       );
     }

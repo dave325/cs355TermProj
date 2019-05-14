@@ -21,10 +21,6 @@ app.use('/', frontend);
 app.use("/api", routes);
 
 process.stdin.resume();//so the program will not close instantly
-function exit(){
-  db.end();
-}
-
 
 //do something when app is closing
 process.on('exit', ()=> {

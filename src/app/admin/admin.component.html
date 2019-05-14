@@ -1,5 +1,6 @@
 <h1>Admin Area</h1>
 <h3>Please enter a url to index into the database</h3>
+<h4 *ngIf="info" role="alert" class="alert alert-info">{{info}}</h4>
 <form (submit)="submit()">
     <label>
       <input type="text" [(ngModel)]="url" name="url">
