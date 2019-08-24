@@ -23,7 +23,7 @@ export class Phase4Component implements OnInit {
 
   }
   getSearchResults() {
-    this.http.get("https://www.googleapis.com/customsearch/v1?key=AIzaSyADp3fUrHECGaIaTDkvu6nuNzA2mnBVRwQ&cx=006547580310217252631:ltgyits9awy&q=" + this.query).subscribe((res: any) => {
+    this.http.get("https://www.googleapis.com/customsearch/v1?key=APIKEYHERE&cx=006547580310217252631:ltgyits9awy&q=" + this.query).subscribe((res: any) => {
       this.fileContents = res.items;
       console.log(res.items)
     }, (err) => {
